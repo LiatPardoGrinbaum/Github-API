@@ -1,14 +1,16 @@
 const input = document.querySelector("#inputUrl");
 const button = document.querySelector("#submit");
 const cards = document.querySelector(".cards-container");
+// const container = document.querySelector(".container");
+const error = document.querySelector(".error");
 
 input.addEventListener("keyup", getData);
 button.addEventListener("click", getUser);
 //will get data from API url
 
 function getData(e) {
-  const user = e.target.value;
-  console.log(user);
+  // const user = e.target.value;
+  // console.log(user);
   if (e.key === "enter") {
     // means I pressed enter
     getUser(e);
@@ -16,12 +18,26 @@ function getData(e) {
 }
 
 async function getUser(e) {
-  e.preventDefault();
-  //need to add input validity conditions!
-  let user = input.value;
-  const response = await fetch(`https://api.github.com/users/${user}`);
-  const data = await response.json();
-  createCard(data, user);
+  try {
+    error.style.display = "none";
+    e.preventDefault();
+    //need to add input validity conditions!
+    let user = input.value;
+    const response = await fetch(`https://api.github.com/users/${user}`);
+    const data = await response.json();
+    if (!response.ok) {
+      throw Error("There isn't such a user name. Please enter a valid user name.");
+    } //or :  if (data.message === "Not Found") throw Error("page not found");
+    if (cards.innerHTML.includes(data.name)) {
+      throw Error("You have already typed that user name.");
+    }
+    createCard(data, user);
+  } catch (err) {
+    input.value = "";
+    error.style.display = "block";
+    error.textContent = `${err}
+    `;
+  }
 }
 
 function createCard(data, user) {
