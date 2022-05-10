@@ -2,7 +2,12 @@ const input = document.querySelector("#inputUrl");
 const button = document.querySelector("#submit");
 const cards = document.querySelector(".cards-container");
 // const container = document.querySelector(".container");
+
 const error = document.querySelector(".error");
+
+window.addEventListener("load", function () {
+  input.focus();
+});
 
 input.addEventListener("keyup", getData);
 button.addEventListener("click", getUser);
@@ -61,7 +66,7 @@ function createCard(data, user) {
   userName.innerHTML = data.name;
   repoNumber.innerHTML = `${data.public_repos} public repositories`;
   input.value = "";
-
+  input.focus();
   card.addEventListener("click", function () {
     window.open(`https://github.com/${user}`, "_blank");
   });
